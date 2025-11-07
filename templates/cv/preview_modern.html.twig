@@ -1,0 +1,390 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ cv.fullName }}'s CV (Modern){% endblock %}
+
+{% block stylesheets %}
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'DejaVu Sans', Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.modern-cv {
+    max-width: 210mm;
+    margin: 0 auto;
+    background: white;
+    font-size: 11px;
+}
+
+.cv-header {
+    display: table;
+    width: 100%;
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    page-break-inside: avoid;
+}
+
+.cv-photo {
+    display: table-cell;
+    width: 100px;
+    vertical-align: top;
+}
+
+.cv-photo img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.cv-title {
+    display: table-cell;
+    vertical-align: top;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.cv-title h1 {
+    font-size: 24px;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.cv-title .summary {
+    font-size: 12px;
+    opacity: 0.9;
+    line-height: 1.3;
+}
+
+.cv-contact {
+    display: table-cell;
+    vertical-align: top;
+    text-align: right;
+    width: 150px;
+}
+
+.cv-contact p {
+    margin-bottom: 4px;
+    font-size: 10px;
+}
+
+.cv-body {
+    padding: 20px;
+}
+
+.cv-section {
+    margin-bottom: 20px;
+    page-break-inside: avoid;
+}
+
+.cv-section h2 {
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 4px;
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.cv-item {
+    margin-bottom: 15px;
+    page-break-inside: avoid;
+}
+
+.cv-item h3 {
+    font-size: 13px;
+    color: #2c3e50;
+    margin-bottom: 3px;
+    font-weight: bold;
+}
+
+.cv-item .company {
+    font-weight: bold;
+    color: #3498db;
+}
+
+.cv-item .date-range {
+    color: #7f8c8d;
+    font-style: italic;
+    margin-bottom: 6px;
+    font-size: 10px;
+}
+
+.cv-item .description {
+    line-height: 1.4;
+    color: #34495e;
+    font-size: 11px;
+}
+
+.skills-container {
+    width: 100%;
+}
+
+.skill-category {
+    margin-bottom: 10px;
+}
+
+.skill-category h4 {
+    margin-bottom: 6px;
+    color: #2c3e50;
+    font-size: 12px;
+}
+
+.skill-list {
+    list-style: none;
+}
+
+.skill-list li {
+    margin-bottom: 4px;
+    display: table;
+    width: 100%;
+}
+
+.skill-name {
+    display: table-cell;
+    width: 60%;
+    font-size: 11px;
+    vertical-align: middle;
+}
+
+.skill-level {
+    display: table-cell;
+    width: 40%;
+    vertical-align: middle;
+    padding-left: 10px;
+}
+
+.skill-level-bar {
+    height: 6px;
+    background: #3498db;
+    border-radius: 3px;
+}
+
+.skill-level-container {
+    width: 80px;
+    height: 6px;
+    background: #ecf0f1;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.project-url {
+    margin-top: 4px;
+    font-size: 10px;
+}
+
+.project-url a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+/* Print-specific styles */
+@media print {
+    body {
+        font-size: 11px;
+    }
+    
+    .modern-cv {
+        box-shadow: none;
+        max-width: none;
+    }
+    
+    .print-hidden {
+        display: none !important;
+    }
+    
+    .cv-section {
+        page-break-inside: avoid;
+    }
+    
+    .cv-item {
+        page-break-inside: avoid;
+    }
+}
+
+/* PDF-specific adjustments */
+@page {
+    margin: 1cm;
+    size: A4;
+}
+
+.print-hidden {
+    display: block;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="modern-cv">
+    <header class="cv-header">
+        {% if cv.photoName %}
+        <div class="cv-photo">
+            <img src="{{ asset('uploads/cv/photos/' ~ cv.photoName) }}" alt="{{ cv.fullName }}">
+        </div>
+        {% endif %}
+        <div class="cv-title">
+            <h1>{{ cv.fullName }}</h1>
+            <p class="summary">{{ cv.summary }}</p>
+        </div>
+        <div class="cv-contact">
+            <p>📧 {{ cv.email }}</p>
+            <p>📞 {{ cv.phone }}</p>
+            <p>📍 {{ cv.city }}</p>
+        </div>
+    </header>
+
+    <div class="cv-body">
+        {% if cv.experiences|length > 0 %}
+        <section class="cv-section">
+            <h2>Professional Experience</h2>
+            {% for experience in cv.experiences %}
+            <div class="cv-item">
+                <h3>{{ experience.position }} <span class="company">at {{ experience.company }}</span></h3>
+                <div class="date-range">
+                    {{ experience.startDate|date('M Y') }} - 
+                    {{ experience.endDate ? experience.endDate|date('M Y') : 'Present' }}
+                </div>
+                <div class="description">{{ experience.description|nl2br }}</div>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        {% if cv.educations|length > 0 %}
+        <section class="cv-section">
+            <h2>Education</h2>
+            {% for education in cv.educations %}
+            <div class="cv-item">
+                <h3>{{ education.degree }}{% if education.fieldOfStudy %} in {{ education.fieldOfStudy }}{% endif %}</h3>
+                <div class="date-range">
+                    {{ education.institution }} | 
+                    {{ education.startDate|date('M Y') }} - 
+                    {{ education.endDate ? education.endDate|date('M Y') : 'Present' }}
+                </div>
+                {% if education.description %}
+                <div class="description">{{ education.description|nl2br }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        {% if cv.languageSkills|length > 0 %}
+        <section class="cv-section">
+            <h2>Language Skills</h2>
+            <div class="skills-container">
+                <div class="skill-category">
+                    <ul class="skill-list">
+                        {% for language in cv.languageSkills %}
+                        <li>
+                            <span class="skill-name">{{ language.language }}</span>
+                            <span class="skill-level">
+                                <div class="skill-level-container">
+                                    <div class="skill-level-bar" style="width: 
+                                        {% if language.level == 'Beginner' %}25%
+                                        {% elseif language.level == 'Intermediate' %}50%
+                                        {% elseif language.level == 'Advanced' %}75%
+                                        {% elseif language.level == 'Fluent' %}90%
+                                        {% elseif language.level == 'Native' %}100%
+                                        {% else %}50%{% endif %}">
+                                    </div>
+                                </div>
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if cv.projects|length > 0 %}
+        <section class="cv-section">
+            <h2>Projects</h2>
+            {% for project in cv.projects %}
+            <div class="cv-item">
+                <h3>{{ project.name }}</h3>
+                {% if project.date %}
+                <div class="date-range">
+                    {{ project.date|date('M Y') }}
+                </div>
+                {% endif %}
+                <div class="description">{{ project.description|nl2br }}</div>
+                {% if project.url %}
+                <div class="project-url">
+                    <strong>URL:</strong> <a href="{{ project.url }}">{{ project.url }}</a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+        
+        {% if cv.computerSkills|length > 0 %}
+<section class="cv-section">
+    <h2>Computer Skills</h2>
+    <div class="skills-container">
+        <div class="skill-category">
+            <ul class="skill-list">
+                {% for skill in cv.computerSkills %}
+                <li>
+                    <span class="skill-name">{{ skill.name }}</span>
+                    <span class="skill-level">
+                        <div class="skill-level-container">
+                            <div class="skill-level-bar" style="width: 
+                                {% if skill.level == 'Beginner' %}25%
+                                {% elseif skill.level == 'Intermediate' %}50%
+                                {% elseif skill.level == 'Advanced' %}75%
+                                {% elseif skill.level == 'Expert' %}100%
+                                {% else %}50%{% endif %}">
+                            </div>
+                        </div>
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+        {% if cv.socialActivities|length > 0 %}
+        <section class="cv-section">
+            <h2>Social & Political Activities</h2>
+            {% for activity in cv.socialActivities %}
+            <div class="cv-item">
+                <h3>{{ activity.title }}{% if activity.organization %} at {{ activity.organization }}{% endif %}</h3>
+                {% if activity.startDate %}
+                <div class="date-range">
+                    {{ activity.startDate|date('M Y') }} - 
+                    {{ activity.endDate ? activity.endDate|date('M Y') : 'Present' }}
+                </div>
+                {% endif %}
+                {% if activity.description %}
+                <div class="description">{{ activity.description|nl2br }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+    </div>
+
+    <div class="text-center p-3 print-hidden">
+        <button onclick="window.print()" class="btn btn-primary">
+            <i class="fas fa-print"></i> Print CV
+        </button>
+        <a href="{{ path('cv_edit', {'id': cv.id}) }}" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Edit CV
+        </a>
+    </div>
+</div>
+{% endblock %}

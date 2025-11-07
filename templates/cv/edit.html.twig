@@ -1,0 +1,372 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit CV - {{ cv.fullName }}{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .form-section {
+        background-color: var(--bs-body-bg);
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        border: 1px solid var(--bs-border-color);
+    }
+    
+    .form-section-header {
+        background-color: var(--bs-primary);
+        color: white;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-section-header h3 {
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .collection-item {
+        background-color: var(--bs-light-bg-subtle);
+        border-radius: 0.375rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--bs-primary);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .collection-item:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .add-item-btn {
+        margin-bottom: 2rem;
+        transition: all 0.2s ease;
+    }
+    
+    .add-item-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .remove-btn {
+        transition: all 0.2s ease;
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+    
+    .remove-btn:hover {
+        transform: scale(1.05);
+    }
+    
+    .photo-preview-container {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    #photoPreview {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: block;
+        margin: 0 auto;
+    }
+    
+    [data-bs-theme="dark"] .collection-item {
+        background-color: var(--bs-dark-bg-subtle);
+        border-color: var(--bs-primary);
+    }
+    
+    /* Form controls */
+    .form-floating label {
+        color: var(--bs-secondary);
+    }
+    
+    .form-control:focus {
+        box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+    }
+    
+    /* Action buttons */
+    .form-actions {
+        background-color: var(--bs-light-bg-subtle);
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-top: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0 overflow-hidden">
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="h4 mb-0">
+                            <i class="fas fa-edit me-2"></i>Edit CV - {{ cv.fullName }}
+                        </h1>
+                        <div>
+                            <a href="{{ path('cv_preview', {id: cv.id}) }}" class="btn btn-outline-light btn-sm me-2">
+                                <i class="fas fa-eye me-1"></i> Preview
+                            </a>
+                            <a href="{{ path('cv_list') }}" class="btn btn-outline-light btn-sm">
+                                <i class="fas fa-arrow-left me-1"></i> Back to List
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    
+                    <!-- Basic Information Section -->
+                    <div class="form-section">
+                        <div class="form-section-header">
+                            <h3><i class="fas fa-user-circle me-2"></i>Basic Information</h3>
+                        </div>
+                        <div class="p-4">
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ form_widget(form.fullName, {'attr': {'class': 'form-control', 'placeholder': ' '}}) }}
+                                        {{ form_label(form.fullName) }}
+                                        <div class="invalid-feedback">
+                                            Please provide your full name.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': ' '}}) }}
+                                        {{ form_label(form.email) }}
+                                        <div class="invalid-feedback">
+                                            Please provide a valid email.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ form_widget(form.phone, {'attr': {'class': 'form-control', 'placeholder': ' '}}) }}
+                                        {{ form_label(form.phone) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ form_widget(form.city, {'attr': {'class': 'form-control', 'placeholder': ' '}}) }}
+                                        {{ form_label(form.city) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    {{ form_widget(form.summary, {'attr': {'class': 'form-control', 'placeholder': ' ', 'style': 'height: 120px'}}) }}
+                                    {{ form_label(form.summary) }}
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        {{ form_label(form.photoFile) }}
+                                        <div class="photo-preview-container mb-2">
+                                            {% if cv.photoName %}
+                                                <img src="{{ asset('uploads/cv/photos/' ~ cv.photoName) }}" 
+                                                     id="photoPreview" 
+                                                     alt="Current profile photo">
+                                                <div class="mt-2">
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" id="removePhotoBtn">
+                                                        <i class="fas fa-trash me-1"></i> Remove Photo
+                                                    </button>
+                                                </div>
+                                            {% else %}
+                                                <img id="photoPreview" class="d-none" alt="Photo preview" />
+                                            {% endif %}
+                                        </div>
+                                        {{ form_widget(form.photoFile, {'attr': {'class': 'form-control'}}) }}
+                                        <small class="text-muted">Recommended size: 300x300 pixels (JPEG or PNG)</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ form_widget(form.template, {'attr': {'class': 'form-select', 'placeholder': ' '}}) }}
+                                        {{ form_label(form.template) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Rest of your form sections (Education, Experience, Skills, etc.) -->
+                    <!-- ... (keep all your other form sections exactly as they were) ... -->
+                    
+                    <!-- Form Actions -->
+                    <div class="form-actions d-flex justify-content-between">
+                        <button type="reset" class="btn btn-outline-secondary">
+                            <i class="fas fa-undo me-2"></i>Reset Changes
+                        </button>
+                        <div>
+                            <a href="{{ path('cv_download', {id: cv.id}) }}" class="btn btn-outline-success me-2">
+                                <i class="fas fa-download me-2"></i>Download PDF
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-save me-2"></i>Update CV
+                            </button>
+                        </div>
+                    </div>
+                    
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Photo preview functionality
+    const photoFileInput = document.getElementById('{{ form.photoFile.vars.id }}');
+    const photoPreview = document.getElementById('photoPreview');
+    const removePhotoBtn = document.getElementById('removePhotoBtn');
+    
+    if (photoFileInput) {
+        photoFileInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    photoPreview.src = event.target.result;
+                    photoPreview.classList.remove('d-none');
+                    
+                    // Show remove button if it exists
+                    if (removePhotoBtn) {
+                        removePhotoBtn.classList.remove('d-none');
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    // Remove photo functionality
+    if (removePhotoBtn) {
+        removePhotoBtn.addEventListener('click', function() {
+            photoFileInput.value = '';
+            photoPreview.src = '';
+            photoPreview.classList.add('d-none');
+            
+            // If using VichUploader with delete option
+            if (document.getElementById('{{ form.photoFile.vars.id }}_delete')) {
+                document.getElementById('{{ form.photoFile.vars.id }}_delete').checked = true;
+            }
+        });
+    }
+
+    // Collection item management (keep your existing code)
+    function setupCollection(collectionClass, addButtonClass, removeButtonClass) {
+        const collection = document.querySelector(`.${collectionClass}`);
+        const addButton = document.querySelector(`.${addButtonClass}`);
+        
+        addButton.addEventListener('click', function(e) {
+            const index = collection.dataset.index;
+            const prototype = collection.dataset.prototype;
+            
+            const newItem = document.createElement('div');
+            newItem.classList.add('collection-item');
+            newItem.innerHTML = prototype.replace(/__name__/g, index);
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.classList.add('btn', 'btn-sm', 'btn-danger', 'remove-btn', removeButtonClass);
+            removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            removeBtn.addEventListener('click', function() {
+                newItem.remove();
+            });
+            
+            newItem.prepend(removeBtn);
+            collection.appendChild(newItem);
+            
+            // Initialize any select elements in the new item
+            $(newItem).find('select').select2({
+                theme: 'bootstrap-5',
+                width: '100%'
+            });
+            
+            collection.dataset.index = parseInt(index) + 1;
+            
+            // Scroll to the new item
+            newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            // Add animation
+            newItem.style.opacity = 0;
+            newItem.style.transform = 'translateY(20px)';
+            newItem.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            setTimeout(() => {
+                newItem.style.opacity = 1;
+                newItem.style.transform = 'translateY(0)';
+            }, 10);
+        });
+        
+        document.querySelectorAll(`.${removeButtonClass}`).forEach(btn => {
+            btn.addEventListener('click', function() {
+                const item = this.closest('.collection-item');
+                item.style.opacity = 0;
+                item.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    item.remove();
+                }, 300);
+            });
+        });
+    }
+    
+    // Initialize all collections
+    setupCollection('education-collection', 'add-education', 'remove-education');
+    setupCollection('experience-collection', 'add-experience', 'remove-experience');
+    setupCollection('language-collection', 'add-language', 'remove-language');
+    setupCollection('computer-skills-collection', 'add-computer-skill', 'remove-computer-skill');
+    setupCollection('project-collection', 'add-project', 'remove-project');
+    setupCollection('social-collection', 'add-social', 'remove-social');
+    
+    // Form validation
+    const form = document.querySelector('.needs-validation');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    }
+    
+    // Initialize Select2 for select elements
+    $('select').select2({
+        theme: 'bootstrap-5',
+        width: '100%'
+    });
+    
+    // Add animation to existing collection items
+    document.querySelectorAll('.collection-item').forEach(item => {
+        item.style.opacity = 0;
+        item.style.transform = 'translateY(20px)';
+        item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        setTimeout(() => {
+            item.style.opacity = 1;
+            item.style.transform = 'translateY(0)';
+        }, 100);
+    });
+});
+</script>
+{% endblock %}

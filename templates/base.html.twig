@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional CV Maker - Create, edit and download your resumes easily">
+    <title>{% block title %}CV Maker Pro{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>📄</text></svg>">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Light theme colors */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --backdrop-blur: blur(16px);
+            --border-radius: 16px;
+            --border-radius-sm: 8px;
+            --animation-speed: 0.3s;
+        }
+        
+        [data-bs-theme="dark"] {
+            /* Dark theme colors */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #818cf8;
+            --secondary-color: #a78bfa;
+            --accent-color: #0f172a;
+            --surface-color: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: var(--accent-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all var(--animation-speed) ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(102, 126, 234, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+        
+        main {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Enhanced Navigation */
+        .navbar {
+            backdrop-filter: var(--backdrop-blur);
+            -webkit-backdrop-filter: var(--backdrop-blur);
+            background: var(--primary-gradient) !important;
+            border: none;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--animation-speed) ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .navbar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .navbar:hover::before {
+            left: 100%;
+        }
+        
+        .navbar-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            text-decoration: none;
+            transition: all var(--animation-speed) ease;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        
+        .navbar-brand i {
+            background: linear-gradient(45deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: 0.5rem;
+        }
+        
+        /* Enhanced Navigation Links */
+        .nav-link.btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white !important;
+            font-weight: 500;
+            transition: all var(--animation-speed) ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        
+        .nav-link.btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.3s;
+        }
+        
+        .nav-link.btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .nav-link.btn:hover::before {
+            left: 100%;
+        }
+        
+        .nav-link.btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Modern Alert Styles */
+        .alert {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
+            animation: slideInDown 0.5s ease-out;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: currentColor;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+            color: #166534;
+            border-left: 4px solid #22c55e;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+            color: #dc2626;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+            color: #d97706;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+            color: #2563eb;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        [data-bs-theme="dark"] .alert-success { color: #4ade80; }
+        [data-bs-theme="dark"] .alert-danger { color: #f87171; }
+        [data-bs-theme="dark"] .alert-warning { color: #fbbf24; }
+        [data-bs-theme="dark"] .alert-info { color: #60a5fa; }
+        
+        /* Enhanced Footer */
+        footer {
+            background: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--primary-gradient);
+        }
+        
+        .text-muted {
+            color: var(--text-secondary) !important;
+        }
+        
+        /* Glassmorphism effect for cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        [data-bs-theme="dark"] .glass-card {
+            background: rgba(30, 41, 59, 0.3);
+            border-color: rgba(148, 163, 184, 0.1);
+        }
+        
+        /* Smooth transitions for theme switching */
+        * {
+            transition: background-color var(--animation-speed) ease,
+                       color var(--animation-speed) ease,
+                       border-color var(--animation-speed) ease,
+                       box-shadow var(--animation-speed) ease;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--accent-color);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6c5b7b 100%);
+        }
+        
+        /* Print styles */
+        @media print {
+            @page {
+                margin: 0.5in;
+                size: A4;
+            }
+            
+            body {
+                font-size: 12px;
+                line-height: 1.3;
+                background: white !important;
+            }
+            
+            body::before {
+                display: none !important;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                box-shadow: none !important;
+            }
+        }
+        
+        /* Responsive enhancements */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+            
+            .nav-link.btn {
+                margin: 0.25rem 0;
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        /* Loading animation */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* Focus styles */
+        .btn:focus,
+        .form-control:focus,
+        .form-select:focus {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+            border-color: var(--primary-color);
+        }
+        
+        /* Micro-interactions */
+        .btn {
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+    </style>
+    
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg no-print">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{{ path('cv_list') }}">
+                <i class="fas fa-file-alt"></i>
+                <span>CV Maker Pro</span>
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item mx-1">
+                        <a class="nav-link btn btn-outline-light btn-sm rounded-pill px-3" href="{{ path('cv_new') }}">
+                            <i class="fas fa-plus me-1"></i> New CV
+                        </a>
+                    </li>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link btn btn-outline-light btn-sm rounded-pill px-3" href="{{ path('cv_list') }}">
+                            <i class="fas fa-list me-1"></i> My CVs
+                        </a>
+                    </li>
+                    <li class="nav-item mx-1">
+                        <button class="nav-link btn btn-outline-light btn-sm rounded-pill px-3" id="themeToggle">
+                            <i class="fas fa-moon me-1"></i> Theme
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash messages -->
+    <div class="container mt-3 no-print">
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show">
+                    <div class="d-flex align-items-center">
+                        <i class="fas 
+                            {% if type == 'success' %}fa-check-circle{% endif %}
+                            {% if type == 'error' %}fa-exclamation-circle{% endif %}
+                            {% if type == 'warning' %}fa-exclamation-triangle{% endif %}
+                            {% if type == 'info' %}fa-info-circle{% endif %}
+                            me-2"></i>
+                        <div>{{ message }}</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <!-- Main content -->
+    <main class="py-4">
+        {% block body %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="no-print">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-muted">
+                        &copy; {{ 'now'|date('Y') }} CV Maker Pro. All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 text-muted">
+                        Crafted with <i class="fas fa-heart text-danger"></i> for professionals
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Enhanced theme toggle script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle functionality with smooth transitions
+            const themeToggle = document.getElementById('themeToggle');
+            const htmlElement = document.documentElement;
+            
+            // Check for saved theme preference or use preferred color scheme
+            const savedTheme = localStorage.getItem('theme') || 
+                              (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            
+            // Apply theme with smooth transition
+            function applyTheme(theme, animate = false) {
+                if (animate) {
+                    document.body.style.transition = 'all 0.3s ease';
+                }
+                
+                htmlElement.setAttribute('data-bs-theme', theme);
+                
+                // Update button icon with animation
+                const icon = themeToggle.querySelector('i');
+                icon.style.transform = 'rotate(180deg)';
+                
+                setTimeout(() => {
+                    icon.classList.toggle('fa-moon', theme === 'light');
+                    icon.classList.toggle('fa-sun', theme === 'dark');
+                    icon.style.transform = 'rotate(0deg)';
+                }, 150);
+                
+                if (animate) {
+                    setTimeout(() => {
+                        document.body.style.transition = '';
+                    }, 300);
+                }
+            }
+            
+            // Apply initial theme
+            applyTheme(savedTheme, false);
+            
+            // Theme toggle click handler
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = htmlElement.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                applyTheme(newTheme, true);
+                localStorage.setItem('theme', newTheme);
+                
+                // Add ripple effect
+                const ripple = document.createElement('span');
+                ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.3);
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+                
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (rect.width / 2 - size / 2) + 'px';
+                ripple.style.top = (rect.height / 2 - size / 2) + 'px';
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+            
+            // Add ripple animation keyframes
+            if (!document.getElementById('ripple-styles')) {
+                const style = document.createElement('style');
+                style.id = 'ripple-styles';
+                style.textContent = `
+                    @keyframes ripple {
+                        to {
+                            transform: scale(4);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Enable tooltips with enhanced styling
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
+                    customClass: 'custom-tooltip'
+                });
+            });
+            
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Add loading states to buttons
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function() {
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.classList.add('loading');
+                        submitBtn.disabled = true;
+                        
+                        const originalText = submitBtn.innerHTML;
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+                        
+                        setTimeout(() => {
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.classList.remove('loading');
+                            submitBtn.disabled = false;
+                        }, 2000);
+                    }
+                });
+            });
+        });
+        
+        // Add custom tooltip styles
+        const tooltipStyles = `
+            .custom-tooltip .tooltip-inner {
+                background: var(--primary-gradient);
+                border-radius: 8px;
+                font-weight: 500;
+                box-shadow: var(--shadow-lg);
+            }
+            .custom-tooltip .tooltip-arrow::before {
+                border-top-color: var(--primary-color);
+            }
+        `;
+        
+        if (!document.getElementById('tooltip-styles')) {
+            const style = document.createElement('style');
+            style.id = 'tooltip-styles';
+            style.textContent = tooltipStyles;
+            document.head.appendChild(style);
+        }
+    </script>
+    
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

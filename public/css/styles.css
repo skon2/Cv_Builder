@@ -1,0 +1,85 @@
+/* Base styles */
+body {
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    font-weight: 600;
+}
+
+.btn {
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-weight: 500;
+}
+
+/* Form styles */
+.form-control, .form-select {
+    border-radius: 5px;
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Collection items */
+.education-item, .experience-item, 
+.language-item, .project-item, 
+.social-item {
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.education-item:hover, .experience-item:hover, 
+.language-item:hover, .project-item:hover, 
+.social-item:hover {
+    background-color: #e9ecef;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .cv-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .cv-title {
+        padding-left: 0;
+        margin-top: 1rem;
+    }
+    
+    .cv-contact {
+        text-align: center;
+        margin-top: 1rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    body {
+        background: white;
+        color: black;
+        font-size: 12pt;
+    }
+    
+    a {
+        text-decoration: none;
+        color: black;
+    }
+}

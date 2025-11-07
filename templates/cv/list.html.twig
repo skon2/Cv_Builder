@@ -1,0 +1,701 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My CV Portfolio{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* Enhanced Card Styles */
+    .cv-card {
+        background: var(--surface-color);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-md);
+        transition: all var(--animation-speed) ease;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+    
+    .cv-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-gradient);
+        transform: scaleX(0);
+        transition: transform var(--animation-speed) ease;
+    }
+    
+    .cv-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-xl);
+        border-color: var(--primary-color);
+    }
+    
+    .cv-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    /* Enhanced Card Header */
+    .cv-card-header {
+        background: linear-gradient(135deg, var(--accent-color), rgba(102, 126, 234, 0.05));
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cv-card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -50px;
+        width: 100px;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+        transform: translateX(-100px);
+        transition: transform 0.6s ease;
+    }
+    
+    .cv-card:hover .cv-card-header::before {
+        transform: translateX(150px);
+    }
+    
+    /* Profile Image Enhancement */
+    .profile-img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border: 4px solid var(--surface-color);
+        box-shadow: var(--shadow-lg);
+        transition: all var(--animation-speed) ease;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .profile-img:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-xl);
+    }
+    
+    .profile-img-container {
+        position: relative;
+        display: inline-block;
+        margin-top: -60px;
+    }
+    
+    .profile-img-container::before {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        right: -4px;
+        bottom: -4px;
+        background: var(--primary-gradient);
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity var(--animation-speed) ease;
+        z-index: 1;
+    }
+    
+    .cv-card:hover .profile-img-container::before {
+        opacity: 1;
+    }
+    
+    /* Enhanced Contact Badges */
+    .contact-badge {
+        background: var(--surface-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        padding: 0.75rem;
+        border-radius: 50%;
+        transition: all var(--animation-speed) ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .contact-badge::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: var(--primary-gradient);
+        border-radius: 50%;
+        transition: all var(--animation-speed) ease;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+    }
+    
+    .contact-badge:hover {
+        transform: scale(1.1) rotate(5deg);
+        border-color: var(--primary-color);
+        color: white;
+    }
+    
+    .contact-badge:hover::before {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .contact-badge i {
+        position: relative;
+        z-index: 2;
+        transition: color var(--animation-speed) ease;
+    }
+    
+    /* Enhanced Action Buttons */
+    .action-btn {
+        border-radius: 25px;
+        font-weight: 500;
+        padding: 0.5rem 1.25rem;
+        transition: all var(--animation-speed) ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        background: var(--surface-color);
+        color: var(--text-primary);
+    }
+    
+    .action-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        transition: left var(--animation-speed) ease;
+        z-index: 1;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: white;
+    }
+    
+    .action-btn:hover::before {
+        left: 0;
+    }
+    
+    .action-btn span {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .btn-preview::before { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .btn-edit::before { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .btn-download::before { background: linear-gradient(135deg, #10b981, #059669); }
+    
+    /* Template Badge Enhancement */
+    .template-badge {
+        background: var(--primary-gradient);
+        color: white;
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .template-badge::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .cv-card:hover .template-badge::before {
+        left: 100%;
+    }
+    
+    /* Enhanced Empty State */
+    .empty-state {
+        background: var(--surface-color);
+        border: 2px dashed var(--border-color);
+        border-radius: var(--border-radius);
+        padding: 4rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .empty-state::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 30% 30%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 70% 70%, rgba(118, 75, 162, 0.05) 0%, transparent 50%);
+        animation: float 15s ease-in-out infinite;
+    }
+    
+    .empty-state-icon {
+        font-size: 4rem;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        opacity: 0.6;
+        transition: all var(--animation-speed) ease;
+    }
+    
+    .empty-state:hover .empty-state-icon {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    
+    /* Enhanced Page Header */
+    .page-header {
+        background: var(--surface-color);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--primary-gradient);
+    }
+    
+    .page-title {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Enhanced Create Button */
+    .create-btn {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        box-shadow: var(--shadow-md);
+        transition: all var(--animation-speed) ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .create-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .create-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+        color: white;
+    }
+    
+    .create-btn:hover::before {
+        left: 100%;
+    }
+    
+    /* Stats Enhancement */
+    .stats-text {
+        background: var(--surface-color);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius-sm);
+        padding: 1rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+    
+    /* Card Animation */
+    .cv-card {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: slideInUp 0.6s ease forwards;
+    }
+    
+    @keyframes slideInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Staggered Animation */
+    .cv-card:nth-child(1) { animation-delay: 0.1s; }
+    .cv-card:nth-child(2) { animation-delay: 0.2s; }
+    .cv-card:nth-child(3) { animation-delay: 0.3s; }
+    .cv-card:nth-child(4) { animation-delay: 0.4s; }
+    .cv-card:nth-child(5) { animation-delay: 0.5s; }
+    .cv-card:nth-child(6) { animation-delay: 0.6s; }
+    
+    /* Responsive Enhancements */
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .profile-img {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .profile-img-container {
+            margin-top: -50px;
+        }
+        
+        .action-btn {
+            padding: 0.4rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .contact-badge {
+            width: 45px;
+            height: 45px;
+            padding: 0.5rem;
+        }
+    }
+    
+    /* Dark theme adjustments */
+    [data-bs-theme="dark"] .cv-card {
+        background: var(--surface-color);
+        border-color: var(--border-color);
+    }
+    
+    [data-bs-theme="dark"] .cv-card-header {
+        background: linear-gradient(135deg, var(--accent-color), rgba(129, 140, 248, 0.05));
+    }
+    
+    [data-bs-theme="dark"] .contact-badge {
+        background: var(--surface-color);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+    }
+    
+    [data-bs-theme="dark"] .action-btn {
+        background: var(--surface-color);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+    }
+    
+    [data-bs-theme="dark"] .empty-state {
+        background: var(--surface-color);
+        border-color: var(--border-color);
+    }
+    
+    [data-bs-theme="dark"] .page-header {
+        background: var(--surface-color);
+        border-color: var(--border-color);
+    }
+    
+    [data-bs-theme="dark"] .stats-text {
+        background: var(--surface-color);
+        border-color: var(--border-color);
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <!-- Enhanced Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="page-title mb-2">
+                    <i class="fas fa-briefcase me-3"></i>My CV Portfolio
+                </h1>
+                <p class="text-muted mb-0 fs-5">Manage and showcase your professional resumes with style</p>
+            </div>
+            <a href="{{ path('cv_new') }}" class="create-btn text-decoration-none">
+                <i class="fas fa-plus me-2"></i>Create New CV
+            </a>
+        </div>
+    </div>
+
+    {% if cvs|length > 0 %}
+        <!-- CV Cards Grid -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-5">
+            {% for cv in cvs %}
+                <div class="col">
+                    <div class="cv-card h-100">
+                        <!-- Card Header -->
+                        <div class="cv-card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="template-badge">
+                                    <i class="fas fa-palette me-2"></i>{{ cv.template|title }}
+                                </span>
+                                <div class="text-end">
+                                    <small class="text-muted d-block">
+                                        <i class="far fa-calendar-alt me-1"></i>{{ cv.createdAt|date('M d, Y') }}
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="far fa-clock me-1"></i>{{ cv.createdAt|date('H:i') }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Profile Section -->
+                        <div class="text-center py-4">
+                            {% if cv.photoName %}
+                                <div class="profile-img-container">
+                                    <img src="{{ asset('uploads/cv/photos/' ~ cv.photoName) }}" 
+                                         alt="{{ cv.fullName }}" 
+                                         class="rounded-circle profile-img"
+                                         loading="lazy">
+                                </div>
+                            {% else %}
+                                <div class="profile-img-container">
+                                    <div class="rounded-circle profile-img d-flex align-items-center justify-content-center bg-light border">
+                                        <i class="fas fa-user fa-2x text-muted"></i>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            <h3 class="fw-bold mt-3 mb-3 text-primary">{{ cv.fullName }}</h3>
+                            
+                            <!-- Contact Information -->
+                            <div class="d-flex justify-content-center gap-3 mb-4 flex-wrap">
+                                {% if cv.email %}
+                                    <a href="mailto:{{ cv.email }}" class="text-decoration-none" 
+                                       data-bs-toggle="tooltip" data-bs-placement="top" title="{{ cv.email }}">
+                                        <div class="contact-badge">
+                                            <i class="fas fa-envelope"></i>
+                                        </div>
+                                    </a>
+                                {% endif %}
+                                {% if cv.phone %}
+                                    <div class="contact-badge" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ cv.phone }}">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                {% endif %}
+                                {% if cv.city %}
+                                    <div class="contact-badge" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ cv.city }}">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                {% endif %}
+                               
+                            </div>
+                            
+                            <!-- Summary -->
+                            {% if cv.summary %}
+                                <div class="px-3 mb-4">
+                                    <p class="text-muted mb-0 fst-italic">
+                                        "{{ cv.summary|length > 100 ? cv.summary|slice(0, 100) ~ '...' : cv.summary }}"
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="p-3 pt-0">
+                            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                <a href="{{ path('cv_preview', {id: cv.id}) }}" 
+                                   class="action-btn btn-preview text-decoration-none"
+                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Preview CV">
+                                    <span><i class="fas fa-eye me-2"></i>Preview</span>
+                                </a>
+                                <a href="{{ path('cv_edit', {id: cv.id}) }}" 
+                                   class="action-btn btn-edit text-decoration-none"
+                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Edit CV">
+                                    <span><i class="fas fa-edit me-2"></i>Edit</span>
+                                </a>
+                                <a href="{{ path('cv_download', {id: cv.id}) }}" 
+                                   class="action-btn btn-download text-decoration-none"
+                                   data-bs-toggle="tooltip" data-bs-placement="top" title="Download PDF">
+                                    <span><i class="fas fa-download me-2"></i>PDF</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Statistics -->
+        <div class="text-center">
+            <div class="stats-text d-inline-block">
+                <i class="fas fa-chart-bar me-2 text-primary"></i>
+                <strong>{{ cvs|length }}</strong> Professional CV{{ cvs|length != 1 ? 's' : '' }} in your portfolio
+            </div>
+        </div>
+    {% else %}
+        <!-- Enhanced Empty State -->
+        <div class="empty-state">
+            <div class="mb-4">
+                <i class="fas fa-file-alt empty-state-icon"></i>
+            </div>
+            <h3 class="fw-bold text-primary mb-3">Your CV Portfolio Awaits</h3>
+            <p class="lead text-muted mb-4 px-3">
+                Transform your career journey by creating professional, eye-catching resumes that stand out from the crowd
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{{ path('cv_new') }}" class="create-btn text-decoration-none">
+                    <i class="fas fa-plus me-2"></i>Create Your First CV
+                </a>
+            </div>
+            <div class="mt-4">
+                <small class="text-muted">
+                    <i class="fas fa-lightbulb me-1"></i>
+                    Pro tip: You can create multiple CVs for different job applications
+                </small>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Enhanced tooltips with better styling
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                trigger: 'hover focus',
+                customClass: 'custom-tooltip',
+                delay: { show: 300, hide: 100 }
+            });
+        });
+        
+        // Smooth reveal animation for cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all CV cards
+        document.querySelectorAll('.cv-card').forEach(card => {
+            observer.observe(card);
+        });
+        
+        // Add hover sound effect (optional)
+        document.querySelectorAll('.cv-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                // Add subtle scale animation
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // Enhanced action button interactions
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // Add ripple effect
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.5);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                    z-index: 3;
+                `;
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+        
+        // Add ripple animation keyframes if not exists
+        if (!document.getElementById('ripple-animation')) {
+            const style = document.createElement('style');
+            style.id = 'ripple-animation';
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Preload images for better performance
+        document.querySelectorAll('.profile-img').forEach(img => {
+            const newImg = new Image();
+            newImg.src = img.src;
+        });
+        
+        // Add loading state to download buttons
+        document.querySelectorAll('.btn-download').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const originalContent = this.innerHTML;
+                this.innerHTML = '<span><i class="fas fa-spinner fa-spin me-2"></i>Generating...</span>';
+                this.style.pointerEvents = 'none';
+                
+                setTimeout(() => {
+                    this.innerHTML = originalContent;
+                    this.style.pointerEvents = 'auto';
+                }, 2000);
+            });
+        });
+    });
+</script>
+{% endblock %}
